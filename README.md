@@ -1,30 +1,30 @@
-# https://github.com/docker-library/python
+# About this Repo
 
-## Maintained by: [the Docker Community](https://github.com/docker-library/python)
+[![Build Status](https://travis-ci.org/wodby/base-python.svg?branch=master)](https://travis-ci.org/wodby/base-python)
+[![Docker Pulls](https://img.shields.io/docker/pulls/wodby/base-python.svg)](https://hub.docker.com/r/wodby/base-python)
+[![Docker Stars](https://img.shields.io/docker/stars/wodby/base-python.svg)](https://hub.docker.com/r/wodby/base-python)
+[![Docker Layers](https://images.microbadger.com/badges/image/wodby/base-python.svg)](https://microbadger.com/images/wodby/base-python)
 
-This is the Git repo of the [Docker "Official Image"](https://docs.docker.com/docker-hub/official_repos/) for [python](https://hub.docker.com/_/python/) (not to be confused with any official python image provided by python upstream). See [the Docker Hub page](https://hub.docker.com/_/python/) for the full readme on how to use this Docker image and for information regarding contributing and issues.
+This repository is a fork of https://github.com/docker-library/python with a few changes:
 
-The [full description from Docker Hub](https://hub.docker.com/_/python/) is generated over in [docker-library/docs](https://github.com/docker-library/docs), specifically in [docker-library/docs/python](https://github.com/docker-library/docs/tree/master/python).
+* We build only Alpine FPM variants
+* Base image changed to `wodby/alpine`
 
-## See a change merged here that doesn't show up on Docker Hub yet?
+## Docker Images
 
-Check [the "library/python" manifest file in the docker-library/official-images repo](https://github.com/docker-library/official-images/blob/master/library/python), especially [PRs with the "library/python" label on that repo](https://github.com/docker-library/official-images/labels/library%2Fpython).
+* All images are based on Alpine Linux 3.7
+* Base image: [wodby/alpine](https://github.com/wodby/alpine)
+* [Travis CI builds](https://travis-ci.org/wodby/base-python) 
+* [Docker Hub](https://hub.docker.com/r/wodby/base-python)
 
-For more information about the official images process, see the [docker-library/official-images readme](https://github.com/docker-library/official-images/blob/master/README.md).
+[_(Dockerfile 3.6)_]: https://github.com/wodby/base-python/tree/master/3.6/alpine3.7/Dockerfile.wodby
+[_(Dockerfile 3.5)_]: https://github.com/wodby/base-python/tree/master/3.5/alpine3.7/Dockerfile.wodby
+[_(Dockerfile 3.4)_]: https://github.com/wodby/base-python/tree/master/3.4/alpine3.7/Dockerfile.wodby
+[_(Dockerfile 2.7)_]: https://github.com/wodby/base-python/tree/master/2.7/alpine3.7/Dockerfile.wodby
 
----
+Supported tags and respective `Dockerfile` links:
 
--	[Travis CI:  
-	![build status badge](https://img.shields.io/travis/docker-library/python/master.svg)](https://travis-ci.org/docker-library/python/branches)
--	[AppVeyor (Windows):  
-	![build status badge](https://ci.appveyor.com/api/projects/status/github/docker-library/python?branch=master&svg=true)](https://ci.appveyor.com/project/docker-library/python)
--	[Automated `update.sh`:  
-	![build status badge](https://doi-janky.infosiftr.net/job/update.sh/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/update.sh/job/python)
-
-| Build | Status | Badges | (per-arch) |
-|:-:|:-:|:-:|:-:|
-| [`amd64`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/amd64/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/amd64/job/python) | [`arm32v5`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/arm32v5/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/arm32v5/job/python) | [`arm32v6`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/arm32v6/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/arm32v6/job/python) | [`arm32v7`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/arm32v7/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/arm32v7/job/python) |
-| [`arm64v8`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/arm64v8/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/arm64v8/job/python) | [`i386`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/i386/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/i386/job/python) | [`ppc64le`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/ppc64le/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/ppc64le/job/python) | [`s390x`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/s390x/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/s390x/job/python) |
-| [`windows-amd64`<br />![build status badge](https://doi-janky.infosiftr.net/job/multiarch/job/windows-amd64/job/python/badge/icon)](https://doi-janky.infosiftr.net/job/multiarch/job/windows-amd64/job/python) |
-
-<!-- THIS FILE IS GENERATED BY https://github.com/docker-library/docs/blob/master/generate-repo-stub-readme.sh -->
+* `3.6.6`, `3.6`, `3`, `latest` [_(Dockerfile 3.6)_]
+* `3.5.5`, `3.5` [_(Dockerfile 3.5)_]
+* `3.4.8`, `3.4` [_(Dockerfile 3.4)_]
+* `2.7.15`, `2.7`, `2` [_(Dockerfile 2.7)_]

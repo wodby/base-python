@@ -1,55 +1,24 @@
 language: bash
-services: docker
+
+services:
+  - docker
 
 env:
-  - VERSION=3.7-rc VARIANT=stretch
-  - VERSION=3.7-rc VARIANT=stretch/slim
-  - VERSION=3.7-rc VARIANT=alpine3.7
-  - VERSION=3.6 VARIANT=stretch
-  - VERSION=3.6 VARIANT=stretch/slim
-  - VERSION=3.6 VARIANT=jessie
-  - VERSION=3.6 VARIANT=jessie/slim
-  - VERSION=3.6 VARIANT=alpine3.7
-  - VERSION=3.6 VARIANT=alpine3.6
-  - VERSION=3.5 VARIANT=jessie
-  - VERSION=3.5 VARIANT=jessie/slim
-  - VERSION=3.5 VARIANT=alpine3.7
-  - VERSION=3.4 VARIANT=jessie
-  - VERSION=3.4 VARIANT=jessie/slim
-  - VERSION=3.4 VARIANT=wheezy
-  - VERSION=3.4 VARIANT=alpine3.7
-  - VERSION=2.7 VARIANT=stretch
-  - VERSION=2.7 VARIANT=stretch/slim
-  - VERSION=2.7 VARIANT=jessie
-  - VERSION=2.7 VARIANT=jessie/slim
-  - VERSION=2.7 VARIANT=wheezy
-  - VERSION=2.7 VARIANT=alpine3.7
-  - VERSION=2.7 VARIANT=alpine3.6
-
-install:
-  - git clone https://github.com/docker-library/official-images.git ~/official-images
-
-before_script:
-  - env | sort
-  - cd "$VERSION/$VARIANT"
-  - slash='/'; image="python:${VERSION}-${VARIANT//$slash/-}"
+  global:
+    - BASE_IMAGE_STABILITY_TAG=2.0.1
+    - PYTHON36=3.6.6
+    - PYTHON35=3.5.5
+    - PYTHON34=3.4.8
+    - PYTHON27=2.7.15
+  matrix:
+    - PYTHON_VER="${PYTHON36}" ALPINE_VER=3.7 TAGS="${PYTHON_VER},3.6,3,latest"
+    - PYTHON_VER="${PYTHON35}" ALPINE_VER=3.7 TAGS="${PYTHON_VER},3.5"
+    - PYTHON_VER="${PYTHON34}" ALPINE_VER=3.7 TAGS="${PYTHON_VER},3.4"
+    - PYTHON_VER="${PYTHON27}" ALPINE_VER=3.4 TAGS="${PYTHON_VER},2.7,2"
 
 script:
-  - |
-    (
-      set -Eeuo pipefail
-      set -x
-      travis_retry docker build -t "$image" .
-      ~/official-images/test/run.sh "$image"
-      if [ -d onbuild ]; then
-        onbuildFrom="$(awk 'toupper($1) == "FROM" { print $2; exit }' onbuild/Dockerfile)"
-        docker tag "$image" "$onbuildFrom"
-        docker build -t "$image-onbuild" onbuild
-        ~/official-images/test/run.sh "$image-onbuild"
-      fi
-    )
+  - cd "${PYTHON_VER:0:3}/alpine${ALPINE_VER}"
+  - travis_retry make
 
-after_script:
-  - docker images
-
-# vim:set et ts=2 sw=2:
+after_success:
+  - . "${TRAVIS_BUILD_DIR}/release.sh"
