@@ -1,6 +1,6 @@
 # About this Repo
 
-[![Build Status](https://travis-ci.org/wodby/base-python.svg?branch=master)](https://travis-ci.org/wodby/base-python)
+[![Build Status](https://travis-ci.com/wodby/base-python.svg?branch=master)](https://travis-ci.com/wodby/base-python)
 [![Docker Pulls](https://img.shields.io/docker/pulls/wodby/base-python.svg)](https://hub.docker.com/r/wodby/base-python)
 [![Docker Stars](https://img.shields.io/docker/stars/wodby/base-python.svg)](https://hub.docker.com/r/wodby/base-python)
 [![Docker Layers](https://images.microbadger.com/badges/image/wodby/base-python.svg)](https://microbadger.com/images/wodby/base-python)
@@ -15,7 +15,7 @@ This repository is a fork of https://github.com/docker-library/python with a few
 
 * All images are based on Alpine Linux 3.7
 * Base image: [wodby/alpine](https://github.com/wodby/alpine)
-* [Travis CI builds](https://travis-ci.org/wodby/base-python) 
+* [Travis CI builds](https://travis-ci.com/wodby/base-python) 
 * [Docker Hub](https://hub.docker.com/r/wodby/base-python)
 
 [_(Dockerfile 3.6)_]: https://github.com/wodby/base-python/tree/master/3.6/alpine3.7/Dockerfile.wodby
