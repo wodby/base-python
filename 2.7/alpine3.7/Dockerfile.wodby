@@ -90,7 +90,7 @@ RUN set -ex \
             \( -type d -a \( -name test -o -name tests \) \) \
             -o \
             \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-        \) -exec rm -rf '{}' + \
+        \) -exec rm -rf '{}' +; \
     } \
     fi \
 	&& rm -rf /usr/src/python
