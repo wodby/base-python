@@ -9,6 +9,7 @@ This repository is a fork of https://github.com/docker-library/python with a few
 
 * We build only Alpine FPM variants
 * Base image changed to `wodby/alpine`
+* Added debug variants compiled with `--with-pydebug` and non-strip bins
 
 ## Docker Images
 
@@ -28,3 +29,7 @@ Supported tags and respective `Dockerfile` links:
 * `3.5.5`, `3.5` [_(Dockerfile 3.5)_]
 * `3.4.8`, `3.4` [_(Dockerfile 3.4)_]
 * `2.7.15`, `2.7`, `2` [_(Dockerfile 2.7)_]
+* `3.6.6-debug`, `3.6-debug`, `3-debug` [_(Dockerfile 3.6)_]
+* `3.5.5-debug`, `3.5-debug` [_(Dockerfile 3.5)_]
+* `3.4.8-debug`, `3.4-debug` [_(Dockerfile 3.4)_]
+* `2.7.15-debug`, `2.7-debug`, `2-debug` [_(Dockerfile 2.7)_]

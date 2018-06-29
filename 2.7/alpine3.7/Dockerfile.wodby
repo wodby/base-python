@@ -1,4 +1,8 @@
-FROM alpine:3.7
+ARG BASE_IMAGE_TAG
+
+FROM wodby/alpine:${BASE_IMAGE_TAG}
+
+ARG PYTHON_DEBUG
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -63,6 +67,7 @@ RUN set -ex \
 		--build="$gnuArch" \
 		--enable-shared \
 		--enable-unicode=ucs4 \
+		$(test "${PYTHON_DEBUG}" = 1 && echo '--with-pydebug') \
 	&& make -j "$(nproc)" \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
@@ -78,12 +83,16 @@ RUN set -ex \
 	&& apk add --virtual .python-rundeps $runDeps \
 	&& apk del .build-deps \
 	\
-	&& find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' + \
+	&& if [[ $PYTHON_DEBUG != 1 ]]; then \
+    { \
+        find /usr/local -depth \
+        \( \
+            \( -type d -a \( -name test -o -name tests \) \) \
+            -o \
+            \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+        \) -exec rm -rf '{}' + \
+    } \
+    fi \
 	&& rm -rf /usr/src/python
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
@@ -104,12 +113,16 @@ RUN set -ex; \
 	; \
 	pip --version; \
 	\
-	find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' +; \
+	if [[ $PYTHON_DEBUG != 1 ]]; then \
+    { \
+        find /usr/local -depth \
+            \( \
+                \( -type d -a \( -name test -o -name tests \) \) \
+                -o \
+                \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+            \) -exec rm -rf '{}' +; \
+    } \
+    fi; \
 	rm -f get-pip.py
 
 CMD ["python2"]

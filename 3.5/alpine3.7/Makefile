@@ -7,7 +7,12 @@ REPO = wodby/base-python
 NAME = base-python-$(PYTHON_VER)
 
 ifeq ($(TAG),)
-    TAG := $(PYTHON_VER)
+    ifeq ($(PYTHON_DEBUG),)
+        TAG := $(PYTHON_VER)
+    else
+        TAG := $(PYTHON_VER)-debug
+        NAME := $(NAME)-debug
+    endif
 endif
 
 ifeq ($(BASE_IMAGE_STABILITY_TAG),)
@@ -23,6 +28,7 @@ default: build
 build:
 	docker build -t $(REPO):$(TAG) \
 		-f Dockerfile.wodby \
+		--build-arg PYTHON_DEBUG=$(PYTHON_DEBUG) \
 		--build-arg BASE_IMAGE_TAG=$(BASE_IMAGE_TAG) ./
 
 test:
