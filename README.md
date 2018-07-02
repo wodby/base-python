@@ -7,7 +7,7 @@
 
 This repository is a fork of https://github.com/docker-library/python with a few changes:
 
-* We build only Alpine FPM variants
+* We build only Alpine variants
 * Base image changed to `wodby/alpine`
 * Added debug variants compiled with `--with-pydebug` and non-strip bins
 
