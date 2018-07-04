@@ -1,6 +1,6 @@
 -include env_make
 
-PYTHON_VER ?= 3.7.0b5
+PYTHON_VER ?= 3.7.0
 ALPINE_VER ?= 3.7
 
 REPO = wodby/base-python
