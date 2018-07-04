@@ -1,7 +1,5 @@
 language: bash
-
-services:
-  - docker
+services: docker
 
 env:
   global:
