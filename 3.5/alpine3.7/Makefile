@@ -1,8 +1,5 @@
 -include env_make
 
-PYTHON_VER ?= 3.5.5
-ALPINE_VER ?= 3.7
-
 REPO = wodby/base-python
 NAME = base-python-$(PYTHON_VER)
 

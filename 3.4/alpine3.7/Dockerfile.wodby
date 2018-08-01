@@ -77,7 +77,7 @@ RUN set -ex \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
-		$(test "${PYTHON_DEBUG}" = 1 && echo '--with-pydebug') \
+        $(test "${PYTHON_DEBUG}" = 1 && echo '--with-pydebug') \
 	&& make -j "$(nproc)" \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
@@ -93,16 +93,14 @@ RUN set -ex \
 	&& apk add --virtual .python-rundeps $runDeps \
 	&& apk del .build-deps \
 	\
-	&& if [[ $PYTHON_DEBUG != 1 ]]; then \
-    { \
-        find /usr/local -depth \
-        \( \
-            \( -type d -a \( -name test -o -name tests \) \) \
-            -o \
-            \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-        \) -exec rm -rf '{}' +; \
-    } \
-    fi \
+	&& if [[ $PYTHON_DEBUG != 1 ]]; then { \
+    find /usr/local -depth \
+		\( \
+			\( -type d -a \( -name test -o -name tests \) \) \
+			-o \
+			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+		\) -exec rm -rf '{}' + \
+    } fi \
 	&& rm -rf /usr/src/python
 
 # make some useful symlinks that are expected to exist
@@ -113,7 +111,7 @@ RUN cd /usr/local/bin \
 	&& ln -s python3-config python-config
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 10.0.1
+ENV PYTHON_PIP_VERSION 18.0
 
 RUN set -ex; \
 	\
@@ -130,16 +128,14 @@ RUN set -ex; \
 	; \
 	pip --version; \
 	\
-    if [[ $PYTHON_DEBUG != 1 ]]; then \
-    { \
-        find /usr/local -depth \
-            \( \
-                \( -type d -a \( -name test -o -name tests \) \) \
-                -o \
-                \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-            \) -exec rm -rf '{}' +; \
-    } \
-    fi; \
+    if [[ $PYTHON_DEBUG != 1 ]]; then { \
+	find /usr/local -depth \
+		\( \
+			\( -type d -a \( -name test -o -name tests \) \) \
+			-o \
+			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+		\) -exec rm -rf '{}' +; \
+    } fi; \
 	rm -f get-pip.py
 
 CMD ["python3"]
