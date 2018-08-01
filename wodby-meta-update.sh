@@ -18,6 +18,7 @@ for filename in Dockerfile-caveman-alpine Dockerfile-alpine; do
     # Optional python debug symbols stripping (with &&).
     sed -i -E 's/&& (find \/usr\/local -depth.+?)/\&\& if [[ $PYTHON_DEBUG != 1 ]]; then { \\\n    \1/' tmp
     sed -i '/-exec rm -rf '"'"'{}'"'"' + \\/a\    } fi \\' tmp
+    sed -i -E 's/(-exec rm -rf '"'"'\{\}'"'"' \+) \\/\1\; \\/' tmp
 
     mv tmp "${filename}.wodby.template"
 done
