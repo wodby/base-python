@@ -112,8 +112,8 @@ for version in "${versions[@]}"; do
 	echo "$version: $fullVersion"
 
 	for v in \
-		alpine{3.6,3.7} \
-		{wheezy,jessie,stretch}{/slim,/onbuild,} \
+		alpine{3.6,3.7,3.8} \
+		{wheezy,jessie,stretch}{/slim,} \
 		windows/nanoserver-{1709,sac2016} \
 		windows/windowsservercore-{1709,ltsc2016} \
 	; do
@@ -123,7 +123,7 @@ for version in "${versions[@]}"; do
 		[ -d "$dir" ] || continue
 
 		case "$variant" in
-			slim|onbuild) template="$variant"; tag="$(basename "$(dirname "$dir")")" ;;
+			slim) template="$variant"; tag="$(basename "$(dirname "$dir")")" ;;
 			windowsservercore-*) template='windowsservercore'; tag="${variant#*-}" ;;
 			alpine*) template='alpine'; tag="${variant#alpine}" ;;
 			*) template='debian'; tag="$variant" ;;
@@ -132,13 +132,12 @@ for version in "${versions[@]}"; do
 			# use "debian:*-slim" variants for "python:*-slim" variants
 			tag+='-slim'
 		fi
+		if [[ "$version" == 2.* ]]; then
+			template="caveman-${template}"
+		fi
 		template="Dockerfile-${template}.template"
 
-		if [[ "$version" == 2.* ]]; then
-			echo "  TODO: vimdiff 3.6/$v/Dockerfile $version/$v/Dockerfile"
-		else
-			{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
-		fi
+		{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
 
 		sed -ri \
 			-e 's/^(ENV GPG_KEY) .*/\1 '"${gpgKeys[$version]:-${gpgKeys[$rcVersion]}}"'/' \
@@ -153,29 +152,38 @@ for version in "${versions[@]}"; do
 			wheezy) sed -ri -e 's/dpkg-architecture --query /dpkg-architecture -q/g' "$dir/Dockerfile" ;;
 		esac
 
-		# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
-		# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL doesn't implement (yet?)
-		if [[ "$version" == 3.7* ]] && [[ "$variant" == alpine* ]]; then
-			sed -ri -e 's/libressl/openssl/g' "$dir/Dockerfile"
+		if [[ "$v" == alpine* ]] && [ "$v" != 'alpine3.6' ]; then
+			# https://github.com/docker-library/python/pull/307
+			# on Alpine 3.6 it's necessary to install libressl to get working HTTPS with wget (and ca-certificates for Python's runtime), but later versions don't require this (support for both is baked into the base)
+			sed -ri -e '/(libressl|openssl|ca-certificates)([ ;]|$)/d' "$dir/Dockerfile"
+
+			# remove any double-empty (or double-empty-continuation) lines the above created
+			uniq "$dir/Dockerfile" > "$dir/Dockerfile.new"
+			mv "$dir/Dockerfile.new" "$dir/Dockerfile"
 		fi
 
-		# Libraries to build the nis module available in Alpine 3.7, but also require this patch:
-		# https://bugs.python.org/issue32521
-		if [[ "$variant" == alpine* ]] && [[ "$variant" != alpine3.7 ]]; then
-			sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
-		fi
-
-		case "$v" in
-			wheezy/slim|jessie/slim)
-				sed -ri \
-					-e 's/libssl1.1/libssl1.0.0/g' \
-					-e 's/libreadline7/libreadline6/g' \
-					"$dir/Dockerfile"
+		case "$version/$v" in
+			# https://bugs.python.org/issue32598 (Python 3.7.0b1+)
+			# TL;DR: Python 3.7+ uses OpenSSL functionality which LibreSSL 2.6.x in Alpine 3.7 doesn't implement
+			# Python 3.5 on Alpine 3.8 needs OpenSSL too
+			3.7*/alpine3.7 | 3.5*/alpine3.8)
+				sed -ri -e 's/libressl-dev/openssl-dev/g' "$dir/Dockerfile"
+				;;& # (3.5*/alpine* needs to match the next block too)
+			# Libraries to build the nis module only available in Alpine 3.7+.
+			# Also require this patch https://bugs.python.org/issue32521 only available in Python 2.7, 3.6+.
+			3.4*/alpine* | 3.5*/alpine* | */alpine3.6)
+				sed -ri -e '/libnsl-dev/d' -e '/libtirpc-dev/d' "$dir/Dockerfile"
+				;;
+			3.4/stretch*)
+				sed -ri -e 's/libssl-dev/libssl1.0-dev/g' "$dir/Dockerfile"
+				;;
+			*/slim) ;;
+			*/stretch | */jessie | */wheezy)
+				sed -ri -e '/libssl-dev/d' "$dir/Dockerfile"
 				;;
 		esac
 
 		case "$v" in
-			*/onbuild) ;;
 			windows/*-1709) ;; # no AppVeyor support for 1709 yet: https://github.com/appveyor/ci/issues/1885
 			windows/*)
 				appveyorEnv='\n    - version: '"$version"'\n      variant: '"$variant$appveyorEnv"

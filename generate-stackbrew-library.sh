@@ -8,7 +8,7 @@ declare -A aliases=(
 )
 
 defaultDebianSuite='stretch'
-defaultAlpineVersion='3.7'
+defaultAlpineVersion='3.8'
 
 self="$(basename "$BASH_SOURCE")"
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
@@ -76,8 +76,8 @@ for version in "${versions[@]}"; do
 	rcVersion="${version%-rc}"
 
 	for v in \
-		{stretch,jessie,wheezy}{,/slim,/onbuild} \
-		alpine{3.7,3.6} \
+		{stretch,jessie,wheezy}{,/slim} \
+		alpine{3.8,3.7,3.6} \
 		windows/windowsservercore-{ltsc2016,1709} \
 		windows/nanoserver-{sac2016,1709} \
 	; do
@@ -94,13 +94,7 @@ for version in "${versions[@]}"; do
 
 		commit="$(dirCommit "$dir")"
 
-		versionDockerfile="$dir/Dockerfile"
-		versionCommit="$commit"
-		if [ "$variant" = 'onbuild' ]; then
-			versionDockerfile="$(dirname "$dir")/Dockerfile"
-			versionCommit="$(dirCommit "$(dirname "$versionDockerfile")")"
-		fi
-		fullVersion="$(git show "$versionCommit":"$versionDockerfile" | awk '$1 == "ENV" && $2 == "PYTHON_VERSION" { print $3; exit }')"
+		fullVersion="$(git show "$commit":"$dir/Dockerfile" | awk '$1 == "ENV" && $2 == "PYTHON_VERSION" { print $3; exit }')"
 
 		versionAliases=(
 			$fullVersion
@@ -121,10 +115,6 @@ for version in "${versions[@]}"; do
 
 		case "$v" in
 			windows/*) variantArches='windows-amd64' ;;
-			*/onbuild)
-				variantParent="$(awk 'toupper($1) == "FROM" { print $2 }' "$(dirname "$dir")/Dockerfile")"
-				variantArches="${parentRepoToArches[$variantParent]}"
-				;;
 			*)
 				variantParent="$(awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile")"
 				variantArches="${parentRepoToArches[$variantParent]}"
