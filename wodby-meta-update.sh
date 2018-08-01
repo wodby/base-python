@@ -27,7 +27,6 @@ cp update.sh tmp
 
 # Use our template for fmp alpine variants.
 sed -i 's/Dockerfile-${template}.template/Dockerfile-${template}.wodby.template/' tmp
-sed -i 's/Dockerfile-${template}.template/Dockerfile-${template}.wodby.template/' tmp
 # Only alpine 3.8
 sed -i '/wheezy,jessie,stretch/d' tmp
 sed -i '/windows\/nanoserver/d' tmp
