@@ -56,7 +56,7 @@ RUN set -ex \
 		linux-headers \
 		make \
 		ncurses-dev \
-		libressl-dev \
+		openssl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
