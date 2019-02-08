@@ -8,8 +8,6 @@ ARG BASE_IMAGE_TAG
 
 FROM wodby/alpine:${BASE_IMAGE_TAG}
 
-ARG PYTHON_DEBUG
-
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
@@ -22,7 +20,7 @@ ENV LANG C.UTF-8
 RUN apk add --no-cache ca-certificates
 
 ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
-ENV PYTHON_VERSION 3.4.9
+ENV PYTHON_VERSION 3.5.6
 
 RUN set -ex \
 	&& apk add --no-cache --virtual .fetch-deps \
@@ -54,7 +52,7 @@ RUN set -ex \
 		linux-headers \
 		make \
 		ncurses-dev \
-		libressl-dev \
+		openssl-dev \
 		pax-utils \
 		readline-dev \
 		sqlite-dev \
@@ -75,7 +73,6 @@ RUN set -ex \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
-        $(test "${PYTHON_DEBUG}" = 1 && echo '--with-pydebug') \
 	&& make -j "$(nproc)" \
 # set thread stack size to 1MB so we don't segfault before we hit sys.getrecursionlimit()
 # https://github.com/alpinelinux/aports/commit/2026e1259422d4e0cf92391ca2d3844356c649d0
@@ -89,14 +86,12 @@ RUN set -ex \
 		| xargs -rt apk add --no-cache --virtual .python-rundeps \
 	&& apk del .build-deps \
 	\
-	&& if [[ $PYTHON_DEBUG != 1 ]]; then { \
-    find /usr/local -depth \
+	&& find /usr/local -depth \
 		\( \
 			\( -type d -a \( -name test -o -name tests \) \) \
 			-o \
 			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' +; \
-    } fi \
+		\) -exec rm -rf '{}' + \
 	&& rm -rf /usr/src/python \
 	\
 	&& python3 --version
@@ -122,14 +117,12 @@ RUN set -ex; \
 	; \
 	pip --version; \
 	\
-    if [[ $PYTHON_DEBUG != 1 ]]; then { \
 	find /usr/local -depth \
 		\( \
 			\( -type d -a \( -name test -o -name tests \) \) \
 			-o \
 			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
 		\) -exec rm -rf '{}' +; \
-    } fi; \
 	rm -f get-pip.py
 
 CMD ["python3"]
