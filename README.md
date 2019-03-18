@@ -28,7 +28,7 @@ Supported tags and respective `Dockerfile` links:
 
 * `3.7.2`, `3.7`, `3`, `latest` [_(Dockerfile 3.7)_]
 * `3.6.8`, `3.6` [_(Dockerfile 3.6)_]
-* `3.5.6`, `3.5` [_(Dockerfile 3.5)_]
-* `3.4.9`, `3.4` [_(Dockerfile 3.4)_]
+* `3.5.7`, `3.5` [_(Dockerfile 3.5)_]
+* `3.4.10`, `3.4` [_(Dockerfile 3.4)_]
 * `2.7.16`, `2.7`, `2` [_(Dockerfile 2.7)_]
 
